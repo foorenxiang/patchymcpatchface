@@ -4,7 +4,7 @@ https://realpython.com/python-import/#import-internals
 
 To quote real python:
 
-```
+```text
 The details of the Python import system are described in the official documentation. At a high level, three things happen when you import a module (or package). The module is:  
 
 - Searched for
@@ -15,6 +15,8 @@ For the usual imports—those done with the import statement—all three steps h
 ```
 
 After importing mypackage.foo ___module___ in the patch module, the imported module will be loaded and bounded to the global namespace with the following keys. Yes, multiple keys for a single ___module___ import!
+
+Afterwards, the patch is robust against how the other modules import this function!
 
 ```python
 filter_sys_modules("mypackage"): {'mypackage': <module 'mypackage' (namespace)>,
@@ -33,14 +35,17 @@ Running mypackage.foo.target_function()
 I'm the patched function
 
 running_package.foo
+from mypackage.foo import target_function
 Running target_function()
 I'm the patched function
 
 running_package.bar
+import mypackage
 Running mypackage.foo.target_function()
 I'm the patched function
 
 running_package.baz
+import mypackage.foo
 Running mypackage.foo.target_function()
 I'm the patched function
 ```
@@ -51,7 +56,7 @@ Assign in sys.modules the parent package key if applicable, and directly overwri
 
 ```python
 import sys
-import mypackage.foo
+import mypackage.foo <-- must be the module containing the function to be patched, not just the package! Nor the function itself! No 'from' import syntax should be used here
 from patch_package.baz import patch_function
 
 mypackage
