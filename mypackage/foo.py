@@ -1,2 +1,4 @@
 def target_function():
-    print("I'm the original function\n")
+    printout = "I'm the original function\n"
+    print(printout)
+    return printout
