@@ -85,6 +85,12 @@ running_package.baz
 import mypackage.foo
 Running mypackage.foo.target_function()
 I'm the patched function
+
+
+running_package.foobar
+from mypackage.foo import *
+Running target_function()
+I'm the patched function
 ```
 
 

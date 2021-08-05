@@ -34,3 +34,7 @@ if __name__ == "__main__":
     from running_package.baz import baz_main
 
     baz_main()
+
+    from running_package.foobar import foobar_main
+
+    foobar_main()
