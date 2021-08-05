@@ -2,6 +2,11 @@
 
 ## Monkey Patching strategy requiring only standard Python library
 
+# What functional files you need to copy into your project:
+1. `patch_apply.py`
+2. `patch_manifest.py`
+3. `patcher.py`
+
 Exactly import the module to be patched (not the package, nor the actual function/object to be patched)
 Assign in sys.modules the parent package key if applicable, and directly overwrite the function/object to be patched, as the package/module attribute
 
