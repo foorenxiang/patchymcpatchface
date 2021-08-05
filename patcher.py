@@ -1,11 +1,11 @@
 import sys
 import mypackage.foo
-from patch_package.baz import patch_function
+import patch_package.baz as baz
 
 mypackage
 
+patch_modules = [baz]
+
 
 def patch():
-    sys.modules["mypackage"].foo.target_function = "abracadabra"
-    sys.modules["mypackage"].foo.target_function = 42
-    sys.modules["mypackage"].foo.target_function = patch_function
+    [getattr(patch_module, "patch")() for patch_module in patch_modules]
