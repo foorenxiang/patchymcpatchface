@@ -15,28 +15,31 @@ def patch_function():
     print(printout)
     return printout
 
-
-def patch_hook():  # TODO: define this patch_hook (reserved function name) for patcher to pick up
+# define this patch_hook (reserved function name) for patcher to pick up
+def patch_hook():  
     from patch_apply import patch_apply
 
+    # put in the full module ancestry and the patch function as parameters
+    # note that you should include the package, module and object ancestry as a string
     patch_apply(
-        "mypackage.foo.target_function", patch_function # note that you should include the package, module and object ancestry as a string
-    )  # TODO: put in the full module ancestry and the patch function as parameters
+        "mypackage.foo.target_function", patch_function 
+    )  
 ```
 
 Define patch modules in patch_manifest.py
 
 ```python
-# TODO: import your patch modules here and document them in PATCH_MODULES below
+# import your patch modules here and document them in PATCH_MODULES below
 import patch_package.baz as baz
 import patch_package.foobaz as foobaz
 from typing import List
 from types import ModuleType
 
+# update this list with modules that contain patch_hook
 PATCH_MODULES: List[ModuleType] = [
     baz,
     foobaz,
-]  # TODO: update this list with modules that contain patch_hook
+]
 ```
 
 How to apply patches:
