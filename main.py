@@ -1,18 +1,18 @@
 import sys
-from patcher import apply_patches
+from patcher import invoke_patch_hooks
 from icecream import ic
+from test_value import test_value
 
-apply_patches()
+invoke_patch_hooks()
 filter_sys_modules = lambda filter_term: {
     key: value for key, value in sys.modules.items() if filter_term in key
 }
 
 
 if __name__ == "__main__":
-    test_value = "I'm the patched function\n"
-
     ic(filter_sys_modules("mypackage"))
     ic(filter_sys_modules("patch_package"))
+
     from mypackage.foo import target_function as target_function_direct
 
     print(__name__)
@@ -40,3 +40,7 @@ if __name__ == "__main__":
     from running_package.foobar import foobar_main
 
     assert foobar_main() == test_value
+
+    from running_package.bazbar import bazbar_main
+
+    assert bazbar_main() == "I'm the other patched function\n"

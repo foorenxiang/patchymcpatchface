@@ -2,37 +2,48 @@
 
 ## Monkey Patching strategy requiring only standard Python library
 
-Exactly import the module to be patched (not the package, nor the actual function to be patched)
-Assign in sys.modules the parent package key if applicable, and directly overwrite the function to be patched, as the package/module attribute
+Exactly import the module to be patched (not the package, nor the actual function/object to be patched)
+Assign in sys.modules the parent package key if applicable, and directly overwrite the function/object to be patched, as the package/module attribute
 
 How a patch module will look like:
 
 ```python
-import sys
-
-
 def patch_function():
-    print("I'm the patched function\n")
+    printout = "I'm the patched function\n"
+    print(printout)
+    return printout
 
 
-def patch(): # all patch modules must have a reserved patch function that serves as the patching hook
-    sys.modules["mypackage"].foo.target_function = patch_function
+def patch_hook():  # TODO: define this patch_hook (reserved function name) for patcher to pick up
+    from patch_apply import patch_apply
 
+    patch_apply(
+        "mypackage.foo.target_function", patch_function
+    )  # TODO: put in the full module ancestry and the patch function as parameters
 ```
 
-How apply patches function will look like
+Define patch modules in patch_manifest.py
 
 ```python
-import mypackage.foo
+# TODO: import your patch modules here and document them in PATCH_MODULES below
 import patch_package.baz as baz
+import patch_package.foobaz as foobaz
+from typing import List
+from types import ModuleType
 
-mypackage
+PATCH_MODULES: List[ModuleType] = [
+    baz,
+    foobaz,
+]  # TODO: update this list with modules that contain patch_hook
+```
 
-patch_modules = [baz]
+How to apply patches:
 
+```python
+# place this in your entrypoint script (including the invoke_patch_hooks() function call) before imports of other modules that should be patched 
+from patcher import invoke_patch_hooks
 
-def apply_patches(): # call this function as part of __main__'s initialisation
-    [getattr(patch_module, "patch")() for patch_module in patch_modules]
+invoke_patch_hooks()
 ```
 
 ## How this works
@@ -91,6 +102,9 @@ running_package.foobar
 from mypackage.foo import *
 Running target_function()
 I'm the patched function
+
+running_package.bazbar
+import mypackage.foo
+Running mypackage.foo.target_function()
+I'm the other patched function
 ```
-
-

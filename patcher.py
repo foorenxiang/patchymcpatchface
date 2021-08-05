@@ -1,22 +1,14 @@
-from importlib import import_module
-from collections import namedtuple
+from patch_manifest import PATCH_MODULES
 from types import ModuleType
 
-# patch modules import
-import patch_package.baz as baz
 
-PatchMap = namedtuple("patch_module_map", ["target_module", "patch_module"])
-
-patch_maps = [PatchMap("mypackage.foo", baz)]
-
-
-def import_and_patch(target_module: str, patch_module: ModuleType):
-    import_module(target_module)
+def _invoke_patch_hook(patch_module: ModuleType):
+    patch_hook = "patch_hook"
     assert hasattr(
-        patch_module, "patch"
+        patch_module, patch_hook
     ), f"{patch_module.__name__} does not have the patch hook defined!"
-    getattr(patch_module, "patch")()
+    getattr(patch_module, patch_hook)()
 
 
-def apply_patches():
-    [import_and_patch(*patch_module_map) for patch_module_map in patch_maps]
+def invoke_patch_hooks():
+    [_invoke_patch_hook(module) for module in PATCH_MODULES]
