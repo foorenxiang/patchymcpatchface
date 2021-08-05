@@ -1,4 +1,41 @@
-# How this works
+# Monkey Patching reliably
+
+## Monkey Patching strategy requiring only standard Python library
+
+Exactly import the module to be patched (not the package, nor the actual function to be patched)
+Assign in sys.modules the parent package key if applicable, and directly overwrite the function to be patched, as the package/module attribute
+
+How a patch module will look like:
+
+```python
+import sys
+
+
+def patch_function():
+    print("I'm the patched function\n")
+
+
+def patch(): # all patch modules must have a reserved patch function that serves as the patching hook
+    sys.modules["mypackage"].foo.target_function = patch_function
+
+```
+
+How apply patches function will look like
+
+```python
+import mypackage.foo
+import patch_package.baz as baz
+
+mypackage
+
+patch_modules = [baz]
+
+
+def apply_patches(): # call this function as part of __main__'s initialisation
+    [getattr(patch_module, "patch")() for patch_module in patch_modules]
+```
+
+## How this works
 
 https://realpython.com/python-import/#import-internals
 
@@ -50,36 +87,4 @@ Running mypackage.foo.target_function()
 I'm the patched function
 ```
 
-Summary:
-Exactly import the module to be patched (not the package, nor the actual function to be patched)
-Assign in sys.modules the parent package key if applicable, and directly overwrite the function to be patched, as the package/module attribute
 
-How a patch module will look like:
-
-```python
-import sys
-
-
-def patch_function():
-    print("I'm the patched function\n")
-
-
-def patch(): # all patch modules must have a reserved patch function that serves as the patching hook
-    sys.modules["mypackage"].foo.target_function = patch_function
-
-```
-
-How apply patches function will look like
-
-```python
-import mypackage.foo
-import patch_package.baz as baz
-
-mypackage
-
-patch_modules = [baz]
-
-
-def apply_patches(): # call this function as part of __main__'s initialisation
-    [getattr(patch_module, "patch")() for patch_module in patch_modules]
-```
