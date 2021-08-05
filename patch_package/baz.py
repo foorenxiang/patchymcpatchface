@@ -6,11 +6,8 @@ def patch_function():
 
 
 def patch():
-    assert hasattr(sys.modules["mypackage"].foo, "target_function")
-    # assert hasattr(
-    #     sys.modules["mypackage"].non_existent_module, "target_function"
-    # )  # this will throw attribute error
-    # assert hasattr(
-    #     sys.modules["mypackage"].foo, "non_existent_target_function"
-    # )  # this will throw attribute error
-    sys.modules["mypackage"].foo.target_function = patch_function
+    patch_target = sys.modules["mypackage"].foo
+    assert hasattr(
+        patch_target, "target_function"
+    ), "The module to be patched is no longer there"
+    patch_target.target_function = patch_function
