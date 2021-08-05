@@ -1,8 +1,8 @@
 import sys
-from patcher import patch
+from patcher import apply_patches
 from icecream import ic
 
-patch()
+apply_patches()
 filter_sys_modules = lambda filter_term: {
     key: value for key, value in sys.modules.items() if filter_term in key
 }
