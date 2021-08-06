@@ -1,5 +1,6 @@
 from patch_manifest import PATCH_MODULES
 from types import ModuleType
+from functools import lru_cache
 
 
 def _invoke_patch_hook(patch_module: ModuleType):
@@ -10,6 +11,7 @@ def _invoke_patch_hook(patch_module: ModuleType):
     getattr(patch_module, patch_hook)()
 
 
+@lru_cache()
 def _invoke_patch_hooks():
     [_invoke_patch_hook(module) for module in PATCH_MODULES]
 

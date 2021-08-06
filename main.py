@@ -5,14 +5,17 @@ from test_value import test_value
 
 
 def main():
+    print("======Before patch:======\n")
     from mypackage.foo import target_function as target_function_direct
 
     assert target_function_direct() == "I'm the original function\n"
     from mypackage.foobar import target_function2
 
     assert target_function2() == "I'm the other original function\n"
-
     import patcher
+
+    patcher
+    print("======After patch:======\n")
 
     filter_sys_modules = lambda filter_term: {
         key: value for key, value in sys.modules.items() if filter_term in key
