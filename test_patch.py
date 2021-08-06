@@ -1,4 +1,3 @@
-from patcher import invoke_patch_hooks
 from test_value import test_value
 
 
@@ -9,8 +8,9 @@ def test_main():
 
 
 def test_patching():
-    invoke_patch_hooks()
+    import patcher
 
+    patcher
     from mypackage.foo import target_function as target_function_direct
 
     assert target_function_direct() == test_value

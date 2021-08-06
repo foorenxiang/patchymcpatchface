@@ -45,10 +45,11 @@ PATCH_MODULES: List[ModuleType] = [
 How to apply patches:
 
 ```python
-# place this in your entrypoint script (including the invoke_patch_hooks() function call) before imports of other modules that should be patched 
-from patcher import invoke_patch_hooks
+# import patcher before imports of other modules that should be patched 
+# it automatically invokes all patch hooks when imported
+import patcher
 
-invoke_patch_hooks()
+patcher
 ```
 
 ## How this works

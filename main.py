@@ -1,5 +1,5 @@
 import sys
-from patcher import invoke_patch_hooks
+
 from icecream import ic
 from test_value import test_value
 
@@ -12,7 +12,8 @@ def main():
 
     assert target_function2() == "I'm the other original function\n"
 
-    invoke_patch_hooks()
+    import patcher
+
     filter_sys_modules = lambda filter_term: {
         key: value for key, value in sys.modules.items() if filter_term in key
     }

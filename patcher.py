@@ -10,5 +10,9 @@ def _invoke_patch_hook(patch_module: ModuleType):
     getattr(patch_module, patch_hook)()
 
 
-def invoke_patch_hooks():
+def _invoke_patch_hooks():
     [_invoke_patch_hook(module) for module in PATCH_MODULES]
+
+
+# automatically apply patches when this library is imported
+_invoke_patch_hooks()
