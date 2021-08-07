@@ -1,6 +1,9 @@
-from patch_manifest import PATCH_MODULES
 from types import ModuleType
-from functools import lru_cache
+from pathlib import Path
+import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def _invoke_patch_hook(patch_module: ModuleType):
@@ -11,10 +14,19 @@ def _invoke_patch_hook(patch_module: ModuleType):
     getattr(patch_module, patch_hook)()
 
 
-@lru_cache()
-def _invoke_patch_hooks():
-    [_invoke_patch_hook(module) for module in PATCH_MODULES]
+def invoke_patch_hooks(PATCH_MODULES=[]):
+    if PATCH_MODULES:
+        [_invoke_patch_hook(module) for module in PATCH_MODULES]
+        return
+    logger.warning("No patch modules provided!")
 
 
-# automatically apply patches when this library is imported
-_invoke_patch_hooks()
+def _patch_on_import():
+    """Patch from default patch manifest module in project root if available, on module import"""
+    if (Path(os.getcwd()) / "patch_manifest.py").exists():
+        from patch_manifest import PATCH_MODULES
+
+        invoke_patch_hooks(PATCH_MODULES)
+
+
+_patch_on_import()

@@ -12,10 +12,18 @@ def main():
     from mypackage.foobar import target_function2
 
     assert target_function2() == "I'm the other original function\n"
+
     import patcher
 
     patcher
-    print("======After patch:======\n")
+
+    # automatically patches from patch_manifest.py on project root on import
+    from patcher import invoke_patch_hooks
+
+    assert target_function2() == "I'm the other original function\n"
+    import patcher
+
+    print("======After patching just the first original function:======\n")
 
     filter_sys_modules = lambda filter_term: {
         key: value for key, value in sys.modules.items() if filter_term in key
@@ -50,6 +58,18 @@ def main():
 
     assert foobar_main() == test_value
 
+    from mypackage.foobar import target_function2
+
+    print("The other original function should still be unpatched at this point")
+    assert target_function2() == "I'm the other original function\n"
+
+    # you can also import another patch module manifest placed elsewhere in your project
+    from running_package.custom_patch_manifest import PATCH_MODULES
+
+    # manually invoke your additional patch hooks. you can use this to control/delay patching
+    invoke_patch_hooks(PATCH_MODULES)
+
+    print("After patching the other original function")
     from running_package.bazbar import bazbar_main
 
     assert bazbar_main() == "I'm the other patched function\n"

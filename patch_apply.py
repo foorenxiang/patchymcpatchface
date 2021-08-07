@@ -1,3 +1,4 @@
+from functools import lru_cache
 import sys
 from importlib import import_module
 
@@ -11,6 +12,7 @@ def patch_hook():
 """
 
 
+@lru_cache(maxsize=None)
 def patch_apply(target_object_ancestry: str, patch_object):
     object_heritage = target_object_ancestry.split(".")
     package = object_heritage[0]

@@ -2,10 +2,12 @@
 
 ## Monkey Patching strategy requiring only standard Python library
 
-### What functional files you need to copy into your project:
+### What functional files you need to copy into your project
+
 1. `patch_apply.py`
 2. `patcher.py`
-3. `patch_manifest.py (only file you should modify to document patches)`
+3. `patch_manifest.py (optional file on project root`
+4. `any_other_patch_manifests_of_any_name_you_create.py (placed anywhere in your project)`
 
 How a patch module will look like:
 
@@ -26,7 +28,10 @@ def patch_hook():
     )  
 ```
 
-Define patch modules in patch_manifest.py
+Define patch modules in patch_manifest.py on project root and/or similar patch manifest modules placed elsewhere in your source  
+The patch modules listed in patch_manifest.py on project root will be patched automatically when you import patcher  
+To have patches invoke in a delayed manner, or if you would like the patches manifest to be placed else in your project, create other manifest module(s) at any location in your source, that contains a manifest variable of type List[ModuleType] as an export  
+See the next section below to see how this custom manifest variable should be applied  
 
 ```python
 # import your patch modules here and document them in PATCH_MODULES below
@@ -38,8 +43,25 @@ from types import ModuleType
 # update this list with modules that contain patch_hook
 PATCH_MODULES: List[ModuleType] = [
     baz,
-    foobaz,
 ]
+```
+
+To delay invocation of certain patches, you may define other patch manifest modules that has an exportable List[ModuleType] variable containing patch modules with the patch_hook defined.  
+Then, in the point of your code where you would like the patches to be invoked:
+
+```python
+from patcher import invoke_patch_hooks
+from where.you.placed.your.custom.manifest.module import YOUR_CUSTOM_PATCH_HOOKS_LIST
+
+...
+...
+...
+# code you are running before you want to invoke the patch
+invoke_patch_hooks(YOUR_CUSTOM_PATCH_HOOKS_LIST)
+#code you are running before you want to invoke the patch
+...
+...
+...
 ```
 
 How to apply patches:
@@ -54,7 +76,7 @@ patcher
 
 ## How this works
 
-https://realpython.com/python-import/#import-internals
+<https://realpython.com/python-import/#import-internals>
 
 To quote real python:
 
