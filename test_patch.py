@@ -1,4 +1,4 @@
 def test_main():
-    from main import main
+    from sample import main
 
     main()
