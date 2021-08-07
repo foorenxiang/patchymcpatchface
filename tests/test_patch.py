@@ -47,7 +47,7 @@ def test_requests_target_object():
     from patching_example.mypackage.request_call import requests_function, Session
 
     pf.patch_apply(
-        [Session, "request"],
+        (Session, "request"),
         lambda *args, **kwargs: request_inner(),
     )
 
