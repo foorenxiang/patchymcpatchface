@@ -11,6 +11,12 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def patch_apply(target_object_ancestry: str, patch_object):
+    """Called by the patch hooks in the patch modules
+
+    Args:
+        target_object_ancestry (str): the reference to the original python object to be patched
+        patch_object (Any): the object that will overwrite the original object, patching it
+    """
     object_heritage = target_object_ancestry.split(".")
     package = object_heritage[0]
     target_module_ancestry = ".".join(object_heritage[:-1])
@@ -34,6 +40,11 @@ def patch_apply(target_object_ancestry: str, patch_object):
 
 
 def _invoke_patch_hook(patch_module: ModuleType):
+    """Calls the patch hook attribute inside the patch module
+
+    Args:
+        patch_module (ModuleType): The module containing the patch
+    """
     patch_hook = "patch_hook"
     assert hasattr(
         patch_module, patch_hook
@@ -42,6 +53,11 @@ def _invoke_patch_hook(patch_module: ModuleType):
 
 
 def invoke_patch_hooks(PATCH_MODULES=[]):
+    """Loops through all the patch modules imported to allow invoke_patch_hook to call their hook
+
+    Args:
+        PATCH_MODULES (list, optional): List of patch modules imported. Defaults to [].
+    """
     if PATCH_MODULES:
         [_invoke_patch_hook(module) for module in PATCH_MODULES]
         return
