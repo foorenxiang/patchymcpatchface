@@ -3,14 +3,14 @@ import os
 from functools import lru_cache
 from importlib import import_module
 import logging
-from typing import Union, Iterable
+from typing import Union, Iterable, Tuple
 
 sys.path.append(os.getcwd())
 logger = logging.getLogger(__name__)
 
 
 def patch_apply(
-    target_object_ancestry: Union[str, Iterable[object, str]],
+    target_object_ancestry: Union[str, Iterable[Tuple[object, str]]],
     patch_object: object,
 ):
     """Interface for patching objects
