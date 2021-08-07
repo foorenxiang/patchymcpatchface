@@ -2,8 +2,8 @@
 import sys
 import os
 import logging
-from src.patchymcpatchface.hooks import invoke_patch_hooks
-from src.patchymcpatchface.apply_patch import patch_apply
+from patchymcpatchface.hooks import invoke_patch_hooks
+from patchymcpatchface.apply_patch import patch_apply
 
 __all__ = [invoke_patch_hooks, patch_apply]
 
