@@ -107,7 +107,7 @@
 
   ```python
   import patchymcpatchface as pf
-  from deco import http_request
+  from main import http_request
 
   URL = "https://jsonplaceholder.typicode.com/posts"
   body_request = {
