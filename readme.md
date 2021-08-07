@@ -2,9 +2,11 @@
 
 ## Monkey Patching strategy requiring only standard Python library
 
-### What functional files you need to copy into your project
+### `pip install patchymcpatchface`
 
-1. `patch_manifest.py (optional file on project root`
+### What patch configuration files you need to create in your project
+
+1. `patch_manifest.py (optional file on project root)`
 2. `any_other_patch_manifests_of_any_name_you_create.py (placed anywhere in your project)`
 
 How a patch module will look like:
