@@ -1,4 +1,4 @@
-# Monkey Patching reliably
+# Monkey Patching Reliably: PatchyMcPatchFace
 
 ## Monkey Patching strategy requiring only standard Python library
 
@@ -46,6 +46,16 @@ PATCH_MODULES: List[ModuleType] = [
 ]
 ```
 
+How to apply patches automatically:
+
+```python
+# import patcher before imports of other modules that should be patched 
+# it automatically invokes all patch hooks when imported
+import patcher
+
+patcher
+```
+
 To delay invocation of certain patches, you may define other patch manifest modules that has an exportable List[ModuleType] variable containing patch modules with the patch_hook defined.  
 Then, in the point of your code where you would like the patches to be invoked:
 
@@ -62,16 +72,6 @@ invoke_patch_hooks(YOUR_CUSTOM_PATCH_HOOKS_LIST)
 ...
 ...
 ...
-```
-
-How to apply patches:
-
-```python
-# import patcher before imports of other modules that should be patched 
-# it automatically invokes all patch hooks when imported
-import patcher
-
-patcher
 ```
 
 ## How this works
