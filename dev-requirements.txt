@@ -1,3 +1,4 @@
 cookiecutter
 black
 rope
+pylint
