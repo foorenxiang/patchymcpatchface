@@ -5,6 +5,5 @@ from typing import List
 from types import ModuleType
 
 #  update this list with modules that contain patch_hook
-PATCH_MODULES: List[ModuleType] = [
-    baz,
-]
+PATCH_MODULES: List[ModuleType] = [baz]
+print("Patch manifest invoked")
