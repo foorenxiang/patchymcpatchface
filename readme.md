@@ -2,7 +2,7 @@
 
 ## Description
 
-Want to mock objects for unit testing? Want to automate application of your monkey patches? This is the package you are looking for 
+Want to mock objects for unit testing? Want to automate application of your monkey patches? This is the package you are looking for
 
 ## Setup
 
@@ -12,7 +12,7 @@ Want to mock objects for unit testing? Want to automate application of your monk
 
 ### Simple Usage Example
 
-#### Install libaries
+#### Install libraries
 
 > pip install patchymcpatchface  
 > pip install pytest (not required if not unit testing)
@@ -64,13 +64,13 @@ Want to mock objects for unit testing? Want to automate application of your monk
 
 - run test
   > pytest .
-  - Test should pass as the return value of `hello_world` has been mocked
+  - Test should pass because the `hello_world` function has been mocked with `hi world` return value.
 
 ### Real World Usage Example
 
-#### Install libaries
+#### Install libraries
 
-> pip3 install patchymcpatchface pytest requests
+> pip install patchymcpatchface pytest requests
 
 #### Your app file
 
@@ -132,7 +132,7 @@ Want to mock objects for unit testing? Want to automate application of your monk
       return mock
 
 
-  def test_requests():
+  def test_http_request():
       pf.patch_apply(
           "main.request", mock_request
       )
@@ -144,4 +144,4 @@ Want to mock objects for unit testing? Want to automate application of your monk
 
 - run test
   > pytest .
-  - Test should pass as the return value of `{'title': 'foo', 'body': 'bar', 'userId': 1, 'id': 123}` has been mocked
+  - Test should pass because the `request` function from the `requests` library has been mocked with `{'title': 'foo', 'body': 'bar', 'userId': 1, 'id': 123}` return value.
