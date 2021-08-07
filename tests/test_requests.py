@@ -16,10 +16,10 @@ def test_requests():
         }
 
     pf.patch_apply(
-        "package_to_be_patched.requests_library_patch_example.Session.request",
+        "package_to_be_patched.request_call.Session.request",
         lambda *args, **kwargs: request_inner(),
     )
-    from package_to_be_patched.requests_library_patch_example import requests_function
+    from package_to_be_patched.request_call import requests_function
 
     response = requests_function()
     print(response)
