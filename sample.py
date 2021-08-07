@@ -1,6 +1,4 @@
 import sys
-
-from icecream import ic
 from test_value import test_value
 
 
@@ -29,8 +27,8 @@ def main():
         key: value for key, value in sys.modules.items() if filter_term in key
     }
 
-    ic(filter_sys_modules("mypackage"))
-    ic(filter_sys_modules("patch_package"))
+    print(filter_sys_modules("mypackage"))
+    print(filter_sys_modules("patch_package"))
 
     print(__name__)
     print("Running target_function_direct()")
