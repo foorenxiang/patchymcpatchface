@@ -157,7 +157,10 @@ disable=print-statement,
         disallowed-name,
         wildcard-import,
         undefined-variable,
-        consider-using-from-import
+        consider-using-from-import,
+        import-outside-toplevel,
+        pointless-statement,
+        reimported
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -181,7 +184,7 @@ evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / stateme
 
 # Set the output format. Available formats are text, parseable, colorized, json
 # and msvs (visual studio). You can also give a reporter class, e.g.
-# mypackage.mymodule.MyReporterClass.
+# patching_example.mypackage.mymodule.MyReporterClass.
 output-format=text
 
 # Tells whether to display a full report or only the messages.

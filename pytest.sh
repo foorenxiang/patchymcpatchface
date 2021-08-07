@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-pytest test_patch.py -rvP \
+pytest tests/ -rvP \
 --cov=. \
 --cov-report html:cov_html \
 --cov-report xml:coverage.xml \

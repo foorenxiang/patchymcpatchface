@@ -21,7 +21,7 @@ def patch_hook():
     # put in the full module ancestry and the patch function as parameters
     # note that you should include the package, module and object ancestry as a string
     patch_apply(
-        "mypackage.foo.target_function", patch_function 
+        "patching_example.mypackage.foo.target_function", patch_function 
     )  
 ```
 
@@ -32,8 +32,8 @@ See the next section below to see how this custom manifest variable should be ap
 
 ```python
 # import your patch modules here and document them in PATCH_MODULES below
-import patch_package.baz as baz
-import patch_package.foobaz as foobaz
+import patching_example.patch_package.baz as baz
+import patching_example.patch_package.foobaz as foobaz
 from typing import List
 from types import ModuleType
 
@@ -87,13 +87,13 @@ The details of the Python import system are described in the official documentat
 For the usual imports—those done with the import statement—all three steps happen automatically. When you use importlib, however, only the first two steps are automatic. You need to bind the module to a variable or namespace yourself.  
 ```
 
-After importing mypackage.foo ___module___ in the patch module, the imported module will be loaded and bounded to the global namespace with the following keys. Yes, multiple keys for a single ___module___ import!
+After importing patching_example.mypackage.foo ___module___ in the patch module, the imported module will be loaded and bounded to the global namespace with the following keys. Yes, multiple keys for a single ___module___ import!
 
 Afterwards, the patch is robust against how the other modules import this function!
 
 ```python
-filter_sys_modules("mypackage"): {'mypackage': <module 'mypackage' (namespace)>,
-                                      'mypackage.foo': <module 'mypackage.foo' from '/Users/foorx/Developer/python_patching_experiment/mypackage/foo.py'>}
+filter_sys_modules("patching_example.mypackage"): {'patching_example.mypackage': <module 'patching_example.mypackage' (namespace)>,
+                                      'patching_example.mypackage.foo': <module 'patching_example.mypackage.foo' from '/Users/foorx/Developer/python_patching_experiment/patching_example.mypackage/foo.py'>}
 ```
 
 Testing various methods of importing the target function to be patched in module foo yields a consistent result:
@@ -104,32 +104,32 @@ Running target_function_direct()
 I'm the patched function
 
 __main__
-Running mypackage.foo.target_function()
+Running patching_example.mypackage.foo.target_function()
 I'm the patched function
 
-running_package.foo
-from mypackage.foo import target_function
+patching_example.running_package.foo
+from patching_example.mypackage.foo import target_function
 Running target_function()
 I'm the patched function
 
-running_package.bar
-import mypackage
-Running mypackage.foo.target_function()
+patching_example.running_package.bar
+import patching_example.mypackage
+Running patching_example.mypackage.foo.target_function()
 I'm the patched function
 
-running_package.baz
-import mypackage.foo
-Running mypackage.foo.target_function()
+patching_example.running_package.baz
+import patching_example.mypackage.foo
+Running patching_example.mypackage.foo.target_function()
 I'm the patched function
 
 
-running_package.foobar
-from mypackage.foo import *
+patching_example.running_package.foobar
+from patching_example.mypackage.foo import *
 Running target_function()
 I'm the patched function
 
-running_package.bazbar
-import mypackage.foo
-Running mypackage.foo.target_function()
+patching_example.running_package.bazbar
+import patching_example.mypackage.foo
+Running patching_example.mypackage.foo.target_function()
 I'm the other patched function
 ```

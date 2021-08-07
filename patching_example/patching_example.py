@@ -1,14 +1,16 @@
+"""Patching example"""
 import sys
 
-from test_value import TEST_VALUE
+from patching_example.test_value import TEST_VALUE
 
 
 def main():
+    """Patching example function"""
     print("======Before patch:======\n")
-    from mypackage.foo import target_function as target_function_direct
+    from patching_example.mypackage.foo import target_function as target_function_direct
 
     assert target_function_direct() == "I'm the original function\n"
-    from mypackage.foobar import target_function2
+    from patching_example.mypackage.foobar import target_function2
 
     assert target_function2() == "I'm the other original function\n"
 
@@ -25,48 +27,48 @@ def main():
         key: value for key, value in sys.modules.items() if filter_term in key
     }
 
-    print(filter_sys_modules("mypackage"))
-    print(filter_sys_modules("patch_package"))
+    print(filter_sys_modules("patching_example.mypackage"))
+    print(filter_sys_modules("patching_example.patch_package"))
 
     print(__name__)
     print("Running target_function_direct()")
     target_function_direct()
 
-    import mypackage
+    import patching_example.mypackage
 
     print(__name__)
-    print("Running mypackage.foo.target_function()")
-    mypackage.foo.target_function()
+    print("Running patching_example.mypackage.foo.target_function()")
+    patching_example.mypackage.foo.target_function()
 
-    from running_package.foo import foo_main
+    from patching_example.running_package.foo import foo_main
 
     assert foo_main() == TEST_VALUE
 
-    from running_package.bar import bar_main
+    from patching_example.running_package.bar import bar_main
 
     assert bar_main() == TEST_VALUE
 
-    from running_package.baz import baz_main
+    from patching_example.running_package.baz import baz_main
 
     assert baz_main() == TEST_VALUE
 
-    from running_package.foobar import foobar_main
+    from patching_example.running_package.foobar import foobar_main
 
     assert foobar_main() == TEST_VALUE
 
-    from mypackage.foobar import target_function2
+    from patching_example.mypackage.foobar import target_function2
 
     print("The other original function should still be unpatched at this point")
     assert target_function2() == "I'm the other original function\n"
 
     # you can also import another patch module manifest placed elsewhere in your project
-    from running_package.custom_patch_manifest import PATCH_MODULES
+    from patching_example.running_package.custom_patch_manifest import PATCH_MODULES
 
     # manually invoke your additional patch hooks. you can use this to control/delay patching
     pf.invoke_patch_hooks(PATCH_MODULES)
 
     print("After patching the other original function")
-    from running_package.bazbar import bazbar_main
+    from patching_example.running_package.bazbar import bazbar_main
 
     assert bazbar_main() == "I'm the other patched function\n"
 
