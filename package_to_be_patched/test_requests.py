@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.getcwd())
+
 import patchymcpatchface as pf
 
 
@@ -12,7 +17,7 @@ def test_requests():
 
     pf.patch_apply(
         "package_to_be_patched.requests_library_patch_example.Session.request",
-        lambda: request_inner(),
+        lambda *args, **kwargs: request_inner(),
     )
     from package_to_be_patched.requests_library_patch_example import requests_function
 
