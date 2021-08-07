@@ -2,27 +2,30 @@ import sys
 import os
 
 sys.path.append(os.getcwd())
-# import patchymcpatchface as pf
-
-# import patch_package.request_patch
-
-# pf.invoke_patch_hooks([patch_package.request_patch])
+import patchymcpatchface as pf
 
 
-def test_requests(mocker):
-    from requests.sessions import Session
+def test_requests():
+    class Session:
+        def request(self, *args, **kwargs):
+            print("I am the patched request!")
+            return {
+                "title": "foo",
+                "body": "bar",
+                "userId": 1,
+            }
 
-    patch_request = lambda *args, **kwargs: {
-        "title": "foo",
-        "body": "bar",
-        "userId": 1,
-    }
-    mocker.patch.object(Session, "request", patch_request)
+        mount = lambda *args, **kwargs: None
+
+    pf.patch_apply(
+        "package_to_be_patched.requests_library_patch_example.Session", Session
+    )
     from package_to_be_patched.requests_library_patch_example import requests_function
 
     response = requests_function()
-    # assert isinstance(response, dict)
     print(response)
+
+    assert isinstance(response, dict)
 
 
 if __name__ == "__main__":

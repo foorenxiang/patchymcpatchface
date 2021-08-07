@@ -14,11 +14,6 @@ def requests_function():
     }
 
     response = session.request("GET", URL, json=body_request)
-    print(type(response))
-    print(dir(response))
-    from icecream import ic
-
-    ic(response)
     return response
 
 
