@@ -1,8 +1,4 @@
 """Tests for patchymcpatchface"""
-import sys
-import os
-
-sys.path.append(os.getcwd())
 from patching_example import patching_example
 
 
