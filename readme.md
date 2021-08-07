@@ -1,6 +1,6 @@
 # Monkey Patching Reliably: PatchyMcPatchFace
 
-## Monkey Patching strategy requiring only standard Python library
+## A monkey patching library that uses only Python standard library
 
 ### What functional files you need to copy into your project
 
