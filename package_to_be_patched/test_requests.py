@@ -2,19 +2,17 @@ import patchymcpatchface as pf
 
 
 def test_requests():
-    class Session:
-        def request(self, *args, **kwargs):
-            print("I am the patched request!")
-            return {
-                "title": "foo",
-                "body": "bar",
-                "userId": 1,
-            }
-
-        mount = lambda *args, **kwargs: None
+    def request_inner():
+        print("I am the patched request!")
+        return {
+            "title": "I",
+            "body": "am",
+            "userId": 42,
+        }
 
     pf.patch_apply(
-        "package_to_be_patched.requests_library_patch_example.Session", Session
+        "package_to_be_patched.requests_library_patch_example.Session.request",
+        lambda: request_inner(),
     )
     from package_to_be_patched.requests_library_patch_example import requests_function
 
