@@ -1,1 +1,2 @@
-test_value = "I'm the patched function\n"
+"""Module with test value"""
+TEST_VALUE = "I'm the patched function\n"

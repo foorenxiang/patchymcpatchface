@@ -16,9 +16,8 @@ def patch_function():
     return printout
 
 # define this patch_hook (reserved function name) for patchymcpatchface to pick up
+from patchymcpatchface import patch_apply
 def patch_hook():  
-    from patchymcpatchface import patch_apply
-
     # put in the full module ancestry and the patch function as parameters
     # note that you should include the package, module and object ancestry as a string
     patch_apply(

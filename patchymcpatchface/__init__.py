@@ -1,11 +1,12 @@
+"""patchymcpatchface inner guts"""
 import sys
+import os
 from functools import lru_cache
 from importlib import import_module
 from types import ModuleType
-from pathlib import Path
-import os
 import logging
 
+sys.path.append(os.getcwd())
 logger = logging.getLogger(__name__)
 
 
@@ -52,24 +53,21 @@ def _invoke_patch_hook(patch_module: ModuleType):
     getattr(patch_module, patch_hook)()
 
 
-def invoke_patch_hooks(PATCH_MODULES=[]):
+def invoke_patch_hooks(patch_modules=None):
     """Loops through all the patch modules imported to allow invoke_patch_hook to call their hook
 
     Args:
         PATCH_MODULES (list, optional): List of patch modules imported. Defaults to [].
     """
-    if PATCH_MODULES:
-        [_invoke_patch_hook(module) for module in PATCH_MODULES]
+    if patch_modules:
+        _ = [_invoke_patch_hook(module) for module in patch_modules]
         return
     logger.warning("No patch modules provided!")
 
 
-def _patch_on_import():
-    """Patch from default patch manifest module in project root if available, on module import"""
-    if (Path(os.getcwd()) / "patch_manifest.py").exists():
-        from patch_manifest import PATCH_MODULES
+try:
+    from patch_manifest import PATCH_MODULES
 
-        invoke_patch_hooks(PATCH_MODULES)
-
-
-_patch_on_import()
+    invoke_patch_hooks(PATCH_MODULES)
+except ModuleNotFoundError:
+    pass

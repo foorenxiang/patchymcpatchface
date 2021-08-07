@@ -1,6 +1,6 @@
 import sys
 
-from test_value import test_value
+from test_value import TEST_VALUE
 
 
 def main():
@@ -40,19 +40,19 @@ def main():
 
     from running_package.foo import foo_main
 
-    assert foo_main() == test_value
+    assert foo_main() == TEST_VALUE
 
     from running_package.bar import bar_main
 
-    assert bar_main() == test_value
+    assert bar_main() == TEST_VALUE
 
     from running_package.baz import baz_main
 
-    assert baz_main() == test_value
+    assert baz_main() == TEST_VALUE
 
     from running_package.foobar import foobar_main
 
-    assert foobar_main() == test_value
+    assert foobar_main() == TEST_VALUE
 
     from mypackage.foobar import target_function2
 
