@@ -4,10 +4,8 @@
 
 ### What functional files you need to copy into your project
 
-1. `patch_apply.py`
-2. `patcher.py`
-3. `patch_manifest.py (optional file on project root`
-4. `any_other_patch_manifests_of_any_name_you_create.py (placed anywhere in your project)`
+1. `patch_manifest.py (optional file on project root`
+2. `any_other_patch_manifests_of_any_name_you_create.py (placed anywhere in your project)`
 
 How a patch module will look like:
 
@@ -17,9 +15,9 @@ def patch_function():
     print(printout)
     return printout
 
-# define this patch_hook (reserved function name) for patcher to pick up
+# define this patch_hook (reserved function name) for patchymcpatchface to pick up
 def patch_hook():  
-    from patch_apply import patch_apply
+    from patchymcpatchface import patch_apply
 
     # put in the full module ancestry and the patch function as parameters
     # note that you should include the package, module and object ancestry as a string
@@ -29,7 +27,7 @@ def patch_hook():
 ```
 
 Define patch modules in patch_manifest.py on project root and/or similar patch manifest modules placed elsewhere in your source  
-The patch modules listed in patch_manifest.py on project root will be patched automatically when you import patcher  
+The patch modules listed in patch_manifest.py on project root will be patched automatically when you import patchymcpatchface
 To have patches invoke in a delayed manner, or if you would like the patches manifest to be placed else in your project, create other manifest module(s) at any location in your source, that contains a manifest variable of type List[ModuleType] as an export  
 See the next section below to see how this custom manifest variable should be applied  
 
@@ -49,25 +47,25 @@ PATCH_MODULES: List[ModuleType] = [
 How to apply patches automatically:
 
 ```python
-# import patcher before imports of other modules that should be patched 
+# import patchymcpatchface before imports of other modules that should be patched 
 # it automatically invokes all patch hooks when imported
-import patcher
+import patchymcpatchface as pf
 
-patcher
+pf
 ```
 
 To delay invocation of certain patches, you may define other patch manifest modules that has an exportable List[ModuleType] variable containing patch modules with the patch_hook defined.  
 Then, in the point of your code where you would like the patches to be invoked:
 
 ```python
-from patcher import invoke_patch_hooks
+import patchymcpatchface as pf 
 from where.you.placed.your.custom.manifest.module import YOUR_CUSTOM_PATCH_HOOKS_LIST
 
 ...
 ...
 ...
 # code you are running before you want to invoke the patch
-invoke_patch_hooks(YOUR_CUSTOM_PATCH_HOOKS_LIST)
+pf.invoke_patch_hooks(YOUR_CUSTOM_PATCH_HOOKS_LIST)
 #code you are running before you want to invoke the patch
 ...
 ...

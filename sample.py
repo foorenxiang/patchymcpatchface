@@ -1,4 +1,5 @@
 import sys
+
 from test_value import test_value
 
 
@@ -11,15 +12,12 @@ def main():
 
     assert target_function2() == "I'm the other original function\n"
 
-    import patcher
-
-    patcher
-
     # automatically patches from patch_manifest.py on project root on import
-    from patcher import invoke_patch_hooks
+    import patchymcpatchface as pf
+
+    pf
 
     assert target_function2() == "I'm the other original function\n"
-    import patcher
 
     print("======After patching just the first original function:======\n")
 
@@ -65,7 +63,7 @@ def main():
     from running_package.custom_patch_manifest import PATCH_MODULES
 
     # manually invoke your additional patch hooks. you can use this to control/delay patching
-    invoke_patch_hooks(PATCH_MODULES)
+    pf.invoke_patch_hooks(PATCH_MODULES)
 
     print("After patching the other original function")
     from running_package.bazbar import bazbar_main

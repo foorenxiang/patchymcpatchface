@@ -5,7 +5,7 @@ def patch_function():
 
 
 def patch_hook():  # TODO: define this patch_hook (reserved function name) for patcher to pick up
-    from patch_apply import patch_apply
+    from patchymcpatchface import patch_apply
 
     patch_apply(
         "mypackage.foo.target_function", patch_function

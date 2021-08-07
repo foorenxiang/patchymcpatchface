@@ -5,6 +5,6 @@ def patch_function():
 
 
 def patch_hook():
-    from patch_apply import patch_apply
+    from patchymcpatchface import patch_apply
 
     patch_apply("mypackage.foobar.target_function2", patch_function)
