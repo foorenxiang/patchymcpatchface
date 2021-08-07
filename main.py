@@ -5,10 +5,10 @@ from test_value import TEST_VALUE
 
 def main():
     print("======Before patch:======\n")
-    from mypackage.foo import target_function as target_function_direct
+    from package_to_be_patched.foo import target_function as target_function_direct
 
     assert target_function_direct() == "I'm the original function\n"
-    from mypackage.foobar import target_function2
+    from package_to_be_patched.foobar import target_function2
 
     assert target_function2() == "I'm the other original function\n"
 
@@ -25,18 +25,18 @@ def main():
         key: value for key, value in sys.modules.items() if filter_term in key
     }
 
-    print(filter_sys_modules("mypackage"))
+    print(filter_sys_modules("package_to_be_patched"))
     print(filter_sys_modules("patch_package"))
 
     print(__name__)
     print("Running target_function_direct()")
     target_function_direct()
 
-    import mypackage
+    import package_to_be_patched
 
     print(__name__)
-    print("Running mypackage.foo.target_function()")
-    mypackage.foo.target_function()
+    print("Running package_to_be_patched.foo.target_function()")
+    package_to_be_patched.foo.target_function()
 
     from running_package.foo import foo_main
 
@@ -54,7 +54,7 @@ def main():
 
     assert foobar_main() == TEST_VALUE
 
-    from mypackage.foobar import target_function2
+    from package_to_be_patched.foobar import target_function2
 
     print("The other original function should still be unpatched at this point")
     assert target_function2() == "I'm the other original function\n"
