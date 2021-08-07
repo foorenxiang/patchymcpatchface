@@ -85,5 +85,4 @@ def patch_apply_object(parent_object: object, target_object: str, patch_object: 
     assert hasattr(
         parent_object, target_object
     ), f"{repr(parent_object)} does not have attribute {target_object}!"
-
     setattr(parent_object, target_object, patch_object)
