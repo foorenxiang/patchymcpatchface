@@ -26,9 +26,11 @@ def patch_apply(target_object_ancestry: str, patch_object, debug=False):
         try:
             import_module(module_string)
         except ModuleNotFoundError:
-            debug and print(f"{module_string} could not be imported")
+            if debug:
+                print(f"{module_string} could not be imported")
             anticipated_target_module_ancestry = ".".join(module_string.split(".")[:-1])
-            debug and print(f"Trying {module_string}")
+            if debug:
+                print(f"Trying {module_string}")
             if anticipated_target_module_ancestry == module_string:
                 raise
             resolve_and_import(anticipated_target_module_ancestry)
