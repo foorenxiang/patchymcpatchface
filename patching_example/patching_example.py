@@ -1,6 +1,8 @@
 """Patching example"""
 import sys
 
+sys.path.append("src")
+
 from patching_example.test_value import TEST_VALUE
 
 
