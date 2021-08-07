@@ -145,6 +145,5 @@ dmypy.json
 cython_debug/
 
 .vscode
-patch_manifest.py
 
 # End of https://www.toptal.com/developers/gitignore/api/python

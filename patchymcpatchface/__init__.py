@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=None)
-def patch_apply(target_object_ancestry: str, patch_object):
+def patch_apply(target_object_ancestry: str, patch_object, debug=False):
     """Called by the patch hooks in the patch modules
 
     Args:
@@ -20,9 +20,20 @@ def patch_apply(target_object_ancestry: str, patch_object):
     """
     object_heritage = target_object_ancestry.split(".")
     package = object_heritage[0]
-    target_module_ancestry = ".".join(object_heritage[:-1])
+    anticipated_target_module_ancestry = ".".join(object_heritage[:-1])
 
-    import_module(target_module_ancestry)
+    def resolve_and_import(module_string):
+        try:
+            import_module(module_string)
+        except ModuleNotFoundError:
+            debug and print(f"{module_string} could not be imported")
+            anticipated_target_module_ancestry = ".".join(module_string.split(".")[:-1])
+            debug and print(f"Trying {module_string}")
+            if anticipated_target_module_ancestry == module_string:
+                raise
+            resolve_and_import(anticipated_target_module_ancestry)
+
+    resolve_and_import(anticipated_target_module_ancestry)
 
     def assign_patch(obj, attr):
         try:
