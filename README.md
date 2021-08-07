@@ -4,6 +4,42 @@
 
 ### `pip install patchymcpatchface`
 
+## How to use this?
+
+### `import patchymcpatchface as pf`
+
+### There are 2 ways this package can be used:
+
+1. Mock objects in unit testing
+2. Automatically apply monkey patches in patch modules through hooks
+
+## Mock objects in unit testing
+
+- Call pf.apply_patch("object.to.patch":str, patch_object: Any) prior to importing your module to be patched
+
+```python
+import patchymcpatchface as pf
+
+
+def test_requests():
+    patch_class_method = lambda *args, **kwargs: "I am the patched lambda"
+
+    pf.patch_apply(
+        "package_to_be_patched.request_call.Session.request",
+        patch_class_method
+    )
+    from package_to_be_patched.request_call import requests_function
+
+    patched_result =  requests_function()
+```
+
+## Automatically apply monkey patches in patch modules through hooks
+
+- import patchymcpatchface as pf
+  - This automatically applies patches listed in patch_manifest.py on your project root (See below for details)
+
+  - pf.invoke_patch_hooks(YOUR_CUSTOM_PATCH_HOOKS_LIST) for delayed patch invocation
+
 ### What patch configuration files you need to create in your project
 
 1. `patch_manifest.py (optional file on project root)`
@@ -17,6 +53,10 @@ def patch_function():
     print(printout)
     return printout
 
+patch_object = {"foo": "bar"}
+
+patch_object_method = lambda *args, **kwargs: "something"
+
 # define this patch_hook (reserved function name) for patchymcpatchface to pick up
 from patchymcpatchface import patch_apply
 def patch_hook():  
@@ -24,6 +64,12 @@ def patch_hook():
     # note that you should include the package, module and object ancestry as a string
     patch_apply(
         "patching_example.mypackage.foo.target_function", patch_function 
+    )  
+    patch_apply(
+        "patching_example.mypackage.foo.target_object", patch_object
+    )  
+    patch_apply(
+        "patching_example.mypackage.foo.target_class.target_method", patch_object_method
     )  
 ```
 
