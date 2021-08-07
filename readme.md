@@ -2,6 +2,8 @@
 
 ## Description
 
+Want to mock objects for unit testing? Want to automate application of your monkey patches? This is the package you are looking for 
+
 ## Setup
 
 > pip3 install patchymcpatchface
@@ -12,7 +14,8 @@
 
 #### Install libaries
 
-> pip3 install patchymcpatchface pytest
+> pip install patchymcpatchface
+> pip install pytest (not required if not unit testing)
 
 #### Your app file
 
