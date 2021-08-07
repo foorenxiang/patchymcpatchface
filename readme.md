@@ -14,7 +14,7 @@ Want to mock objects for unit testing? Want to automate application of your monk
 
 #### Install libaries
 
-> pip install patchymcpatchface
+> pip install patchymcpatchface  
 > pip install pytest (not required if not unit testing)
 
 #### Your app file
