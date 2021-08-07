@@ -131,7 +131,7 @@
 
   def test_requests():
       pf.patch_apply(
-          "deco.request", mock_request
+          "main.request", mock_request
       )
 
       response = http_request("POST", URL, body_request)
