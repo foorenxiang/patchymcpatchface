@@ -1,137 +1,147 @@
 # Monkey Patching Reliably: PatchyMcPatchFace
 
-## Monkey Patching strategy requiring only standard Python library
+## Description
 
-### `pip install patchymcpatchface`
+Want to mock objects for unit testing? Want to automate application of your monkey patches? This is the package you are looking for
 
-### What patch configuration files you need to create in your project
+## Setup
 
-1. `patch_manifest.py (optional file on project root)`
-2. `any_other_patch_manifests_of_any_name_you_create.py (placed anywhere in your project)`
+> pip install patchymcpatchface
 
-How a patch module will look like:
+## How to use
 
-```python
-def patch_function():
-    printout = "I'm the patched function\n"
-    print(printout)
-    return printout
+### Simple Usage Example
 
-# define this patch_hook (reserved function name) for patchymcpatchface to pick up
-from patchymcpatchface import patch_apply
-def patch_hook():  
-    # put in the full module ancestry and the patch function as parameters
-    # note that you should include the package, module and object ancestry as a string
-    patch_apply(
-        "package_to_be_patched.foo.target_function", patch_function 
-    )  
-```
+#### Install libraries
 
-Define patch modules in patch_manifest.py on project root and/or similar patch manifest modules placed elsewhere in your source  
-The patch modules listed in patch_manifest.py on project root will be patched automatically when you import patchymcpatchface
-To have patches invoke in a delayed manner, or if you would like the patches manifest to be placed else in your project, create other manifest module(s) at any location in your source, that contains a manifest variable of type List[ModuleType] as an export  
-See the next section below to see how this custom manifest variable should be applied  
+> pip install patchymcpatchface  
+> pip install pytest (not required if not unit testing)
 
-```python
-# import your patch modules here and document them in PATCH_MODULES below
-import patch_package.baz as baz
-import patch_package.foobaz as foobaz
-from typing import List
-from types import ModuleType
+#### Your app file
 
-# update this list with modules that contain patch_hook
-PATCH_MODULES: List[ModuleType] = [
-    baz,
-]
-```
+- `main.py`
 
-How to apply patches automatically:
-
-```python
-# import patchymcpatchface before imports of other modules that should be patched 
-# it automatically invokes all patch hooks when imported
-import patchymcpatchface as pf
-
-pf
-```
-
-To delay invocation of certain patches, you may define other patch manifest modules that has an exportable List[ModuleType] variable containing patch modules with the patch_hook defined.  
-Then, in the point of your code where you would like the patches to be invoked:
-
-```python
-import patchymcpatchface as pf 
-from where.you.placed.your.custom.manifest.module import YOUR_CUSTOM_PATCH_HOOKS_LIST
-
-...
-...
-...
-# code you are running before you want to invoke the patch
-pf.invoke_patch_hooks(YOUR_CUSTOM_PATCH_HOOKS_LIST)
-#code you are running before you want to invoke the patch
-...
-...
-...
-```
-
-## How this works
-
-<https://realpython.com/python-import/#import-internals>
-
-To quote real python:
-
-```text
-The details of the Python import system are described in the official documentation. At a high level, three things happen when you import a module (or package). The module is:  
-
-- Searched for
-- Loaded
-- Bound to a namespace
-
-For the usual imports—those done with the import statement—all three steps happen automatically. When you use importlib, however, only the first two steps are automatic. You need to bind the module to a variable or namespace yourself.  
-```
-
-After importing package_to_be_patched.foo ___module___ in the patch module, the imported module will be loaded and bounded to the global namespace with the following keys. Yes, multiple keys for a single ___module___ import!
-
-Afterwards, the patch is robust against how the other modules import this function!
-
-```python
-filter_sys_modules("package_to_be_patched"): {'package_to_be_patched': <module 'package_to_be_patched' (namespace)>,
-                                      'package_to_be_patched.foo': <module 'package_to_be_patched.foo' from '/Users/foorx/Developer/python_patching_experiment/package_to_be_patched/foo.py'>}
-```
-
-Testing various methods of importing the target function to be patched in module foo yields a consistent result:
-
-```text
-__main__
-Running target_function_direct()
-I'm the patched function
-
-__main__
-Running package_to_be_patched.foo.target_function()
-I'm the patched function
-
-running_package.foo
-from package_to_be_patched.foo import target_function
-Running target_function()
-I'm the patched function
-
-running_package.bar
-import package_to_be_patched
-Running package_to_be_patched.foo.target_function()
-I'm the patched function
-
-running_package.baz
-import package_to_be_patched.foo
-Running package_to_be_patched.foo.target_function()
-I'm the patched function
+  ```python
+  def hello_world():
+      return "Hello World"
 
 
-running_package.foobar
-from package_to_be_patched.foo import *
-Running target_function()
-I'm the patched function
+  def get_text():
+      return hello_world()
 
-running_package.bazbar
-import package_to_be_patched.foo
-Running package_to_be_patched.foo.target_function()
-I'm the other patched function
-```
+
+  if __name__ == "__main__":
+      print(get_text())
+  ```
+
+- run file
+  > python3 main.py
+  - result
+    ```
+    Hello World
+    ```
+
+#### Your test file
+
+- `test_main.py`
+
+  ```python
+  import patchymcpatchface as pf
+  from main import get_text
+
+
+  mock_hello_world = lambda *args, **kwargs: "hi world"
+
+
+  def test_get_text():
+      pf.patch_apply(
+          "main.hello_world", mock_hello_world
+      )
+
+      result = get_text()
+      assert result == "hi world"
+  ```
+
+- run test
+  > pytest .
+  - Test should pass because the `hello_world` function has been mocked with `hi world` return value.
+
+### Real World Usage Example
+
+#### Install libraries
+
+> pip install patchymcpatchface pytest requests
+
+#### Your app file
+
+- `main.py`
+
+  ```python
+  from requests import request
+
+
+  URL = "https://jsonplaceholder.typicode.com/posts"
+  body_request = {
+      "title": "foo",
+      "body": "bar",
+      "userId": 1,
+  }
+
+
+  def http_request(method, url, request_body):
+      response = request(method, URL, json=request_body)
+      return response
+
+
+  if __name__ == "__main__":
+      print(http_request("POST", URL, body_request).json())
+  ```
+
+- run file
+  > python3 main.py
+  - result
+    ```
+    {'title': 'foo', 'body': 'bar', 'userId': 1, 'id': 101}
+    ```
+
+#### Your test file
+
+- `test_main.py`
+
+  ```python
+  import patchymcpatchface as pf
+  from main import http_request
+
+  URL = "https://jsonplaceholder.typicode.com/posts"
+  body_request = {
+      "title": "foo",
+      "body": "bar",
+      "userId": 1,
+  }
+
+
+  def mock_request(*args, **kwargs):
+      mock = type("mock_request", (), {})()
+      mock.status_code = 201
+      mock.json = lambda: {
+          "title": "foo",
+          "body": "bar",
+          "userId": 1,
+          "id": 123,
+      }
+      return mock
+
+
+  def test_http_request():
+      pf.patch_apply(
+          "main.request", mock_request
+      )
+
+      response = http_request("POST", URL, body_request)
+      assert response.status_code == mock_request().status_code
+      assert response.json() == mock_request().json()
+  ```
+
+- run test
+  > pytest .
+  - Test should pass because the `request` function from the `requests` library has been mocked with `{'title': 'foo', 'body': 'bar', 'userId': 1, 'id': 123}` return value.
