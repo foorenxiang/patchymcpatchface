@@ -221,7 +221,7 @@ pf will look for this function and invoke it
 
 `patch_manifest.py` contains the list of patches that pf will apply
 
-_Automatic patching on pf import_
+_Automatic patching on pf import_  
 If `patch_manifest.py` is placed at project root with `PATCH_MODULES` defined, the patches will be automatically applied  
 It can be be located elsewhere, but will not be automatically executed when pf is imported. See real world usage below for details
 
