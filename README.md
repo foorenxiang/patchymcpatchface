@@ -221,7 +221,7 @@ pf will look for this function and invoke it
 
 `patch_manifest.py` contains the list of patches that pf will apply
 
-_Automatic patching on pf import_
+_Automatic patching on pf import_  
 If `patch_manifest.py` is placed at project root with `PATCH_MODULES` defined, the patches will be automatically applied  
 It can be be located elsewhere, but will not be automatically executed when pf is imported. See real world usage below for details
 
@@ -360,4 +360,65 @@ Use `pf.invoke_patch_hooks` to register and invoke the patches. See below for ex
     bar foo
     ```
 
+## How this works
 
+<https://realpython.com/python-import/#import-internals>
+
+To quote real python:
+
+```text
+The details of the Python import system are described in the official documentation. At a high level, three things happen when you import a module (or package). The module is:  
+
+- Searched for
+- Loaded
+- Bound to a namespace
+
+For the usual imports—those done with the import statement—all three steps happen automatically. When you use importlib, however, only the first two steps are automatic. You need to bind the module to a variable or namespace yourself.  
+```
+
+After importing package_to_be_patched.foo ___module___ in the patch module, the imported module will be loaded and bounded to the global namespace with the following keys. Yes, multiple keys for a single ___module___ import!
+
+Afterwards, the patch is robust against how the other modules import this function!
+
+```python
+filter_sys_modules("package_to_be_patched"): {'package_to_be_patched': <module 'package_to_be_patched' (namespace)>,
+                                      'package_to_be_patched.foo': <module 'package_to_be_patched.foo' from '/Users/foorx/Developer/python_patching_experiment/package_to_be_patched/foo.py'>}
+```
+
+Testing various methods of importing the target function to be patched in module foo yields a consistent result:
+
+```text
+__main__
+Running target_function_direct()
+I'm the patched function
+
+__main__
+Running package_to_be_patched.foo.target_function()
+I'm the patched function
+
+running_package.foo
+from package_to_be_patched.foo import target_function
+Running target_function()
+I'm the patched function
+
+running_package.bar
+import package_to_be_patched
+Running package_to_be_patched.foo.target_function()
+I'm the patched function
+
+running_package.baz
+import package_to_be_patched.foo
+Running package_to_be_patched.foo.target_function()
+I'm the patched function
+
+
+running_package.foobar
+from package_to_be_patched.foo import *
+Running target_function()
+I'm the patched function
+
+running_package.bazbar
+import package_to_be_patched.foo
+Running package_to_be_patched.foo.target_function()
+I'm the other patched function
+```
