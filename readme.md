@@ -80,7 +80,7 @@ Want to mock objects for unit testing? Want to automate application of your monk
   from requests import request
 
 
-  URL = "https://jsonplaceholder.typicode.com/posts"
+  url = "https://jsonplaceholder.typicode.com/posts"
   body_request = {
       "title": "foo",
       "body": "bar",
@@ -89,12 +89,12 @@ Want to mock objects for unit testing? Want to automate application of your monk
 
 
   def http_request(method, url, request_body):
-      response = request(method, URL, json=request_body)
+      response = request(method, url, json=request_body)
       return response
 
 
   if __name__ == "__main__":
-      print(http_request("POST", URL, body_request).json())
+      print(http_request("POST", url, body_request).json())
   ```
 
 - run file
@@ -112,7 +112,7 @@ Want to mock objects for unit testing? Want to automate application of your monk
   import patchymcpatchface as pf
   from main import http_request
 
-  URL = "https://jsonplaceholder.typicode.com/posts"
+  url = "https://jsonplaceholder.typicode.com/posts"
   body_request = {
       "title": "foo",
       "body": "bar",
@@ -137,7 +137,7 @@ Want to mock objects for unit testing? Want to automate application of your monk
           "main.request", mock_request
       )
 
-      response = http_request("POST", URL, body_request)
+      response = http_request("POST", url, body_request)
       assert response.status_code == mock_request().status_code
       assert response.json() == mock_request().json()
   ```
