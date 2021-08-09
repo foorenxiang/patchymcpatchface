@@ -37,7 +37,8 @@ Want to mock objects for unit testing? Want to automate application of your monk
 - run file
   > python3 main.py
   - result
-    ```
+
+    ```python
     Hello World
     ```
 
@@ -100,7 +101,8 @@ Want to mock objects for unit testing? Want to automate application of your monk
 - run file
   > python3 main.py
   - result
-    ```
+
+    ```python
     {'title': 'foo', 'body': 'bar', 'userId': 1, 'id': 101}
     ```
 
