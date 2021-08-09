@@ -7,8 +7,19 @@ Want to mock objects for unit testing? Want to automate application of your monk
 ## Setup
 
 > pip install patchymcpatchface
+> import patchymcpatchface as pf
 
 ## How to use
+
+There are 2 modes to use this package
+
+1. Directly patch an object with pf.patch_apply
+   - Useful for mocking in unit tests
+2. For normal script execution, using patch hooks that automate patch application
+   - Patch hook: Function defined in your patch modules that pf will automatically find and invoke on pf's import
+   - Patch hooks also support delayed invocation if required
+
+## Mocking for unit tests (Directly patching an object)
 
 ### Simple Usage Example
 
@@ -147,3 +158,206 @@ Want to mock objects for unit testing? Want to automate application of your monk
 - run test
   > pytest .
   - Test should pass because the `request` function from the `requests` library has been mocked with `{'title': 'foo', 'body': 'bar', 'userId': 1, 'id': 123}` return value.
+
+## Automating patch application with patch hooks
+
+### Simple Usage Example
+
+#### Install library
+
+> pip install patchymcpatchface
+
+#### Your app file
+
+- `main.py`
+
+  ```python
+  import patchymcpatchface as pf
+
+  def hello_world():
+      return "Hello World"
+  
+  def foo_bar():
+      return "foo bar"
+
+
+  if __name__ == "__main__":
+      print(hello_world())
+      print(foo_bar())
+  ```
+
+#### Your monkey patch files
+
+- `hello_world_patch.py`
+
+  ```python
+  import patchymcpatchface as pf
+
+
+  patched_hello_world = lambda *args, **kwargs: "hi world"
+
+
+  def patch_hook():
+      pf.patch_apply(
+          "main.hello_world", patched_hello_world
+      )
+      print("Applied hello world patch")
+  ```
+
+`patch_hook` is a reserved function name to be placed at the module global level  
+pf will look for this function and invoke it  
+
+#### Your patch manifest file
+
+- `patch_manifest.py` (placed at project root)
+
+  ```python
+  import hello_world_patch
+
+  PATCH_MODULES = [
+    hello_world_patch,
+  ]
+  ```
+
+`patch_manifest.py` contains the list of patches that pf will apply
+
+_Automatic patching on pf import_
+If `patch_manifest.py` is placed at project root with `PATCH_MODULES` defined, the patches will be automatically applied  
+It can be be located elsewhere, but will not be automatically executed when pf is imported. See real world usage below for details
+
+- run main
+  > python3 main.py
+  - result
+
+    ```python
+    Applied hello world patch
+    hi world
+    ```
+
+### Real World Usage Example
+
+#### Your monkey patch files
+
+- `hello_world_patch.py`
+
+  ```python
+  import patchymcpatchface as pf
+
+
+  patched_hello_world = lambda *args, **kwargs: "hi world"
+
+
+  def patch_hook():
+      pf.patch_apply(
+          "main.hello_world", patched_hello_world
+      )
+      print("Applied hello world patch")
+  ```
+
+- `foo_bar_patch.py`
+
+  ```python
+  import patchymcpatchface as pf
+
+
+  patched_foo_bar = lambda *args, **kwargs: "bar foo"
+
+
+  def patch_hook():
+      pf.patch_apply(
+          "main.foo_bar", patched_foo_bar
+      )
+      print("Applied foo bar patch")
+  ```
+
+`patch_hook` is a reserved function name to be placed at the module global level  
+pf will look for this function and invoke it  
+#### Your patch manifest file
+
+- `patch_manifest.py` (placed in hello_package)
+
+  ```python
+  import hello_world_patch
+  from typing import List
+  from types import ModuleType
+
+  PATCH_MODULES: List[ModuleType] = [
+    hello_world_patch,
+    # you can list other modules containing monkey patches and patch_hook here
+  ]
+  ```
+
+- `patch_manifest.py` (placed in foo_package)
+
+  ```python
+  import foo_bar_patch
+  from typing import List
+  from types import ModuleType
+
+  PATCH_MODULES: List[ModuleType] = [
+    foo_bar_patch,
+    # you can list other modules containing monkey patches and patch_hook here
+  ]
+  ```
+
+`patch_manifest.py` contains the list of patches that pf will apply
+
+_Automatic patching on pf import_  
+If a `patch_manifest.py` is placed at project root with `PATCH_MODULES` defined, the patches will be automatically applied  
+
+_Other means of invoking automatic patching_  
+If `patch_manifest.py` is:
+
+- In a different location  
+and/or  
+- Multiple patch manifests are desired  
+and/or  
+- Delayed invocation is desired for specific patches  
+Use `pf.invoke_patch_hooks` to register and invoke the patches. See below for example:
+
+#### Your app file
+
+- `main.py`
+
+  ```python
+  import patchymcpatchface as pf
+  from hello_package.patch_manifest_hello import PATCH_MODULES_HELLO
+  from foo_package.patch_manifest_foo import PATCH_MODULES as PATCH_MODULES_FOO
+
+  def hello_world():
+      return "Hello World"
+  
+  def foo_bar():
+      return "foo bar"
+
+
+  if __name__ == "__main__":
+      # apply patches at start of program
+      pf.invoke_patch_hooks(PATCH_MODULES_HELLO)
+      
+      # run the patched function registered by PATCH_MODULES
+      print(hello_world())
+      
+      # call the original function
+      print(foo_bar()) 
+      
+      # delayed patch invocation for foo_bar
+      pf.invoke_patch_hooks(PATCH_MODULES_FOO)
+      
+      # run the patched function registered by PATCH_MODULES_FOO
+      print(foo_bar())
+  ```
+
+- run main
+  > python3 main.py
+  - result
+
+    ```python
+    Applied hello world patch
+    hi world
+    foo bar
+    Applied foo bar patch
+    bar foo
+    ```
+
+
