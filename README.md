@@ -16,8 +16,6 @@ There are 2 modes to use this package
 1. Directly patch an object with pf.patch_apply
    - Useful for mocking in unit tests
 2. For normal script execution, using patch hooks that automate patch application
-   - Patch hook: Function defined in your patch modules that pf will automatically find and invoke on pf's import
-   - Patch hooks also support delayed invocation if required
 
 ## Mocking for unit tests (Directly patching an object)
 
@@ -182,6 +180,7 @@ There are 2 modes to use this package
 
 
   if __name__ == "__main__":
+      pf.invoke_patch_hooks(PATCH_MODULES)
       print(hello_world())
       print(foo_bar())
   ```
@@ -220,10 +219,6 @@ pf will look for this function and invoke it
   ```
 
 `patch_manifest.py` contains the list of patches that pf will apply
-
-_Automatic patching on pf import_  
-If `patch_manifest.py` is placed at project root with `PATCH_MODULES` defined, the patches will be automatically applied  
-It can be be located elsewhere, but will not be automatically executed when pf is imported. See real world usage below for details
 
 - run main
   > python3 main.py
@@ -302,17 +297,8 @@ pf will look for this function and invoke it
 
 `patch_manifest.py` contains the list of patches that pf will apply
 
-_Automatic patching on pf import_  
-If a `patch_manifest.py` is placed at project root with `PATCH_MODULES` defined, the patches will be automatically applied  
+_Invoking automatic patching_  
 
-_Other means of invoking automatic patching_  
-If `patch_manifest.py` is:
-
-- In a different location  
-and/or  
-- Multiple patch manifests are desired  
-and/or  
-- Delayed invocation is desired for specific patches  
 Use `pf.invoke_patch_hooks` to register and invoke the patches. See below for example:
 
 #### Your app file
