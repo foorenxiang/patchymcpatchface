@@ -29,6 +29,7 @@ def invoke_patch_hooks(patch_modules=None):
         PATCH_MODULES (list, optional): List of patch modules imported. Defaults to [].
     """
     if patch_modules:
-        _ = [_invoke_patch_hook(module) for module in patch_modules]
+        for module in patch_modules:
+            _invoke_patch_hook(module)
         return
     logger.warning("No patch modules provided!")
