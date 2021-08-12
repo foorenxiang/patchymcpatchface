@@ -6,7 +6,7 @@ Want to mock objects for unit testing? Want to automate application of your monk
 
 ## Setup
 
-> pip install patchymcpatchface
+> pip install patchymcpatchface  
 > import patchymcpatchface as pf
 
 ## How to use
