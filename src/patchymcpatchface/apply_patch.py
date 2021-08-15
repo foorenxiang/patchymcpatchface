@@ -31,7 +31,7 @@ def patch_apply(
         patch_apply_string(target_object_ancestry, patch_object)
         return
     if isinstance(target_object_ancestry, Iterable):
-        patch_apply_object(*target_object_ancestry, patch_object)
+        patch_apply_attribute_of_parent_object(*target_object_ancestry, patch_object)
         return
 
 
@@ -75,7 +75,9 @@ def patch_apply_string(target_object_ancestry: str, patch_object):
     assign_patch(sys.modules[package], next(object_heritage_iter))
 
 
-def patch_apply_object(parent_object: object, target_object: str, patch_object: object):
+def patch_apply_attribute_of_parent_object(
+    parent_object: object, target_object: str, patch_object: object
+):
     """Directly patches the parent object fed in
 
     Args:
@@ -87,3 +89,16 @@ def patch_apply_object(parent_object: object, target_object: str, patch_object: 
         parent_object, target_object
     ), f"{repr(parent_object)} does not have attribute {target_object}!"
     setattr(parent_object, target_object, patch_object)
+
+
+def patch_apply_on_object_module(target_object: object, patch_object: object):
+    """Patch imported object directly if it has a module attribute
+
+    Args:
+        target_object (object): imported object to be pathed
+    """
+    assert hasattr(
+        target_object, "__module__"
+    ), f"{target_object.__name__} does not have module attribute!"
+    module_name = getattr(target_object)
+    module = sys.modules[module_name]
