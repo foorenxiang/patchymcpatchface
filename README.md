@@ -65,7 +65,7 @@ There are 2 modes to use this package
 
   def test_get_text():
       pf.patch_apply(
-          "main.hello_world", mock_hello_world
+        pf.as_module(relative_path="main.py", patch_object_in_module="hello_world"), mock_hello_world
       )
 
       result = get_text()
@@ -145,7 +145,7 @@ There are 2 modes to use this package
 
   def test_http_request():
       pf.patch_apply(
-          "main.request", mock_request
+          pf.as_module(relative_path="main.py", patch_object_in_module="request"), mock_request
       )
 
       response = http_request("POST", url, body_request)
@@ -198,7 +198,7 @@ There are 2 modes to use this package
 
   def patch_hook():
       pf.patch_apply(
-          "main.hello_world", patched_hello_world
+          pf.as_module(relative_path="main.py", patch_object_in_module="hello_world"), patched_hello_world
       )
       print("Applied hello world patch")
   ```
@@ -244,7 +244,7 @@ pf will look for this function and invoke it
 
   def patch_hook():
       pf.patch_apply(
-          "main.hello_world", patched_hello_world
+          pf.as_module(relative_path="main.py", patch_object_in_module="hello_world"), patched_hello_world
       )
       print("Applied hello world patch")
   ```
@@ -260,7 +260,7 @@ pf will look for this function and invoke it
 
   def patch_hook():
       pf.patch_apply(
-          "main.foo_bar", patched_foo_bar
+          pf.as_module(relative_path="main.py", patch_object_in_module="foo_bar"), patched_foo_bar
       )
       print("Applied foo bar patch")
   ```
